@@ -12,6 +12,14 @@ El sistema permite:
 - ✅ Almacenar datos en localStorage
 - ✅ Interfaz responsive y profesional
 
+## 📸 Capturas de Pantalla
+
+Las siguientes capturas se han copiado al directorio del proyecto y están incluidas aquí:
+
+![Vista principal](assets/screenshot-2026-05-25_22-06-50.png)
+
+![Modal de estudiantes](assets/screenshot-2026-05-25_22-07-04.png)
+
 ### Tecnologías Utilizadas
 - **HTML5**: Estructura semántica
 - **CSS3**: Diseño responsive con 4+ breakpoints
