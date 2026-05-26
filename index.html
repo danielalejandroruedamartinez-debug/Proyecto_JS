@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rutas Seguras Kids - Sistema de Gestión</title>
+    <link rel="stylesheet" href="Css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>🚌 Rutas Seguras Kids</h1>
+                <p class="subtitle">Sistema de Gestión de Rutas Escolares</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Sidebar con formularios -->
+            <aside class="sidebar">
+                <!-- Formulario de Rutas -->
+                <section class="form-section">
+                    <h2>➕ Nueva Ruta</h2>
+                    <form id="routeForm" class="form">
+                        <div class="form-group">
+                            <label for="routeName">Nombre de la Ruta:</label>
+                            <input type="text" id="routeName" placeholder="Ej: Ruta Centro" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="driverName">Conductor:</label>
+                            <input type="text" id="driverName" placeholder="Ej: Juan Pérez" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="departureTime">Hora de Salida:</label>
+                            <input type="time" id="departureTime" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="city">Ciudad (para clima):</label>
+                            <input type="text" id="city" placeholder="Ej: Madrid" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Crear Ruta</button>
+                    </form>
+                </section>
+
+                <!-- Formulario de Estudiantes -->
+                <section class="form-section">
+                    <h2>👤 Nuevo Estudiante</h2>
+                    <form id="studentForm" class="form">
+                        <div class="form-group">
+                            <label for="studentName">Nombre:</label>
+                            <input type="text" id="studentName" placeholder="Ej: María García" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="studentAge">Edad:</label>
+                            <input type="number" id="studentAge" min="3" max="18" placeholder="Edad" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="studentPhone">Teléfono Emergencia:</label>
+                            <input type="tel" id="studentPhone" placeholder="Ej: +34 123456789" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="assignRoute">Asignar a Ruta: <span class="optional-text">(opcional)</span></label>
+                            <select id="assignRoute">
+                                <option value="">-- Selecciona una ruta --</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Agregar Estudiante</button>
+                    </form>
+                </section>
+            </aside>
+
+            <!-- Contenido Principal -->
+            <section class="main-section">
+                <!-- Rutas Container -->
+                <div class="routes-container">
+                    <h2 class="section-title">📋 Rutas Activas</h2>
+                    <div id="routesGrid" class="routes-grid">
+                        <!-- Las route-card se renderizarán aquí dinámicamente -->
+                    </div>
+                </div>
+
+                <!-- Estudiantes Totales -->
+                <div class="unassigned-container">
+                    <h2 class="section-title">👥 Estudiantes Totales</h2>
+                    <div id="studentList" class="students-list">
+                        <!-- Todos los estudiantes aparecerán aquí -->
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2026 Rutas Seguras Kids. Sistema de Gestión Escolar.</p>
+        </footer>
+    </div>
+
+    <!-- Modales -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modalTitle">Estudiantes en Ruta</h2>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- Template para Web Component -->
+    <template id="routeCardTemplate">
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
+        <div class="route-card">
+            <div class="card-header">
+                <h3 class="route-title"></h3>
+                <div class="weather-info"></div>
+            </div>
+            <div class="card-body">
+                <p><strong>👨‍✈️ Conductor:</strong> <span class="driver-name"></span></p>
+                <p><strong>⏰ Salida:</strong> <span class="departure-time"></span></p>
+                <p><strong>👥 Estudiantes:</strong> <span class="student-count">0</span></p>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-secondary btn-small view-students">Ver Estudiantes</button>
+                <button class="btn btn-danger btn-small delete-route">Eliminar</button>
+            </div>
+        </div>
+    </template>
+
+    <!-- Scripts -->
+    <script src="JS/students.js"></script>
+    <script src="JS/routes.js"></script>
+    <script src="JS/weather.js"></script>
+    <script src="JS/app.js"></script>
+</body>
+</html>
