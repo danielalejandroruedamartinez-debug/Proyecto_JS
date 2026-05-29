@@ -191,30 +191,52 @@ function renderRoutes() {
     });
 }
 
-/**
- * Renderiza todos los estudiantes
- */
-function renderStudentList() {
+// funciuon filtrado estudiantes
+function renderStudentList(routeFilter = '') {
     const container = document.getElementById('studentList');
-    const students = studentManager.getAllStudents();
+    let students = studentManager.getAllStudents();
+
+    if (routeFilter) {
+        students = students.filter(student => {
+            if (routeFilter === 'unassigned') {
+                return !student.routeId;
+            }
+            
+            const route = student.routeId ? routeManager.getRouteById(student.routeId) : null;
+            if (!route) return routeFilter === 'unassigned';
+            
+            const routeNameLower = route.name.toLowerCase();
+            return routeNameLower.includes(routeFilter.split('_')[1]);
+        });
+    }
 
     container.innerHTML = '';
 
     if (students.length === 0) {
-        container.innerHTML = '<p style="text-align: center; color: #94a3b8; padding: 2rem;">No hay estudiantes registrados. Agrega tu primer estudiante.</p>';
+        container.innerHTML = '<p style="text-align: center; color: #94a3b8; padding: 2rem;">No hay estudiantes que coincidan con el filtro seleccionado.</p>';
         return;
     }
 
     students.forEach(student => {
         const route = student.routeId ? routeManager.getRouteById(student.routeId) : null;
         const div = document.createElement('div');
-        div.className = 'student-item';
+        
+        let routeClass = '';
+        if (route) {
+            const routeNameLower = route.name.toLowerCase();
+            if (routeNameLower.includes('norte')) routeClass = 'route-norte';
+            else if (routeNameLower.includes('sur')) routeClass = 'route-sur';
+            else if (routeNameLower.includes('centro')) routeClass = 'route-centro';
+        }
+        
+        div.className = `student-item ${routeClass}`;
         div.innerHTML = `
             <div class="student-info">
                 <div class="student-name">${student.name}</div>
                 <div class="student-details">
-                    Edad: ${student.age} | Teléfono: ${student.phone} | Ruta: ${route ? route.name : 'Sin ruta'}
+                    Edad: ${student.age} | Teléfono: ${student.phone}
                 </div>
+                ${route ? `<span class="route-badge">${route.name}</span>` : '<span class="route-badge" style="background-color: #94a3b8;">Sin Ruta</span>'}
             </div>
             <div class="student-actions">
                 <button class="btn btn-secondary btn-small" onclick="openEditStudentModal('${student.id}')">Editar</button>
@@ -282,7 +304,11 @@ function updateStudentFromModal(studentId) {
         });
         document.getElementById('modal').classList.remove('active');
         showNotification('Estudiante actualizado correctamente', 'success');
-        renderStudentList();
+        
+        // Obtiene el filtro actual y re-renderiza
+        const filterSelect = document.getElementById('routeFilter');
+        const currentFilter = filterSelect ? filterSelect.value : '';
+        renderStudentList(currentFilter);
         renderRoutes();
     } catch (error) {
         showNotification(error.message, 'error');
@@ -329,7 +355,10 @@ function assignStudentToRoute(studentId, routeId) {
         studentManager.assignStudentToRoute(studentId, routeId);
         document.getElementById('modal').classList.remove('active');
         showNotification('Estudiante asignado correctamente', 'success');
-        renderStudentList();
+        
+        const filterSelect = document.getElementById('routeFilter');
+        const currentFilter = filterSelect ? filterSelect.value : '';
+        renderStudentList(currentFilter);
         renderRoutes();
     } catch (error) {
         showNotification(error.message, 'error');
@@ -345,7 +374,10 @@ function removeStudentFromRoute(studentId) {
             studentManager.unassignStudent(studentId);
             document.getElementById('modal').classList.remove('active');
             showNotification('Estudiante desasignado', 'success');
-            renderStudentList();
+            
+            const filterSelect = document.getElementById('routeFilter');
+            const currentFilter = filterSelect ? filterSelect.value : '';
+            renderStudentList(currentFilter);
             renderRoutes();
         } catch (error) {
             showNotification(error.message, 'error');
@@ -361,7 +393,10 @@ function deleteStudent(studentId) {
         try {
             studentManager.deleteStudent(studentId);
             showNotification('Estudiante eliminado correctamente', 'success');
-            renderStudentList();
+            
+            const filterSelect = document.getElementById('routeFilter');
+            const currentFilter = filterSelect ? filterSelect.value : '';
+            renderStudentList(currentFilter);
             renderRoutes();
         } catch (error) {
             showNotification(error.message, 'error');
@@ -413,7 +448,10 @@ function setupStudentForm() {
             studentManager.createStudent(name, age, phone, routeId);
             form.reset();
             showNotification('Estudiante agregado correctamente', 'success');
-            renderStudentList();
+            
+            const filterSelect = document.getElementById('routeFilter');
+            const currentFilter = filterSelect ? filterSelect.value : '';
+            renderStudentList(currentFilter);
             renderRoutes();
         } catch (error) {
             showNotification(error.message, 'error');
@@ -439,15 +477,79 @@ function setupModal() {
     });
 }
 
+/**
+ * Configura el filtro de rutas
+ */
+function setupRouteFilter() {
+    const filterSelect = document.getElementById('routeFilter');
+    if (!filterSelect) return;
+
+    filterSelect.addEventListener('change', (e) => {
+        const selectedFilter = e.target.value;
+        renderStudentList(selectedFilter);
+    });
+}
+
+/**
+ * Carga datos de ejemplo si no existen estudiantes
+ */
+function loadInitialData() {
+    // Verifica si ya hay datos
+    const existingStudents = studentManager.getAllStudents();
+    const existingRoutes = routeManager.getAllRoutes();
+
+    // Si no hay rutas, crea las rutas predeterminadas
+    if (existingRoutes.length === 0) {
+        try {
+            routeManager.createRoute('Ruta Norte', 'Juan García', '07:00', 'Madrid');
+            routeManager.createRoute('Ruta Sur', 'María López', '07:15', 'Madrid');
+            routeManager.createRoute('Ruta Centro', 'Carlos Rodríguez', '07:30', 'Madrid');
+            console.log('✓ Rutas de ejemplo creadas');
+        } catch (error) {
+            console.log('Rutas de ejemplo ya existen o error:', error.message);
+        }
+    }
+    
+    if (existingStudents.length === 0) {
+        const routes = routeManager.getAllRoutes();
+        const rutaNorte = routes.find(r => r.name.includes('Norte'))?.id;
+        const rutaSur = routes.find(r => r.name.includes('Sur'))?.id;
+        const rutaCentro = routes.find(r => r.name.includes('Centro'))?.id;
+
+        const estudiantes = [
+            { name: 'Papulince', age: 8, phone: '+34 912345678', routeId: rutaNorte },
+            { name: 'SDLG', age: 7, phone: '+34 912345679', routeId: rutaNorte },
+            { name: 'Bodoque', age: 9, phone: '+34 912345680', routeId: rutaSur },
+            { name: 'Claudio', age: 8, phone: '+34 912345681', routeId: rutaSur },
+            { name: 'Hot pants', age: 7, phone: '+34 912345682', routeId: rutaCentro },
+            { name: 'Dieguito', age: 10, phone: '+34 912345683', routeId: rutaCentro },
+        ];
+
+        estudiantes.forEach(est => {
+            try {
+                studentManager.createStudent(est.name, est.age, est.phone, est.routeId);
+            } catch (error) {
+                console.log('Error al crear estudiante:', error.message);
+            }
+        });
+        
+        console.log('✓ Estudiantes de ejemplo creados');
+    }
+}
+
 // ==================== Inicialización ====================
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Aplicación Rutas Seguras Kids - Iniciando...');
 
+    // Carga datos de ejemplo si no existen
+    loadInitialData();
+
     // Configura formularios
     setupRouteForm();
     setupStudentForm();
     setupModal();
+    setupRouteFilter();
 
     // Renderiza datos existentes
     renderRoutes();

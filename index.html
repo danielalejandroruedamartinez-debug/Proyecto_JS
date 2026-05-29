@@ -84,6 +84,18 @@
                 <!-- Estudiantes Totales -->
                 <div class="unassigned-container">
                     <h2 class="section-title">👥 Estudiantes Totales</h2>
+                    
+                    <!-- Filtro por Ruta -->
+                    <div class="filter-section">
+                        <label for="routeFilter" class="filter-label">Filtrar por Ruta:</label>
+                        <select id="routeFilter" class="filter-select">
+                            <option value="">Todas</option>
+                            <option value="route_norte">Ruta Norte</option>
+                            <option value="route_sur">Ruta Sur</option>
+                            <option value="route_centro">Ruta Centro</option>
+                        </select>
+                    </div>
+                    
                     <div id="studentList" class="students-list">
                         <!-- Todos los estudiantes aparecerán aquí -->
                     </div>

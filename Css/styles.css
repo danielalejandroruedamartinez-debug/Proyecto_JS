@@ -331,6 +331,107 @@ route-card {
     color: var(--text-secondary);
 }
 
+/* ==================== Filtro de Rutas ==================== */
+.filter-section {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: var(--bg-secondary);
+    border-radius: 8px;
+    flex-wrap: wrap;
+}
+
+.filter-label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+.filter-select {
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--primary-color);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    background-color: white;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: var(--transition);
+    flex: 1;
+    min-width: 200px;
+}
+
+.filter-select:hover {
+    border-color: var(--primary-hover);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--primary-hover);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+/* ==================== Estilos por Ruta ==================== */
+.student-item {
+    background: var(--bg-secondary);
+    padding: 1.25rem;
+    border-radius: 8px;
+    border-left: 4px solid var(--warning-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: var(--transition);
+}
+
+.student-item.route-norte {
+    border-left-color: #2563eb;
+    background: linear-gradient(to right, rgba(37, 99, 235, 0.05), transparent);
+}
+
+.student-item.route-norte .route-badge {
+    background-color: #2563eb;
+    color: white;
+}
+
+.student-item.route-sur {
+    border-left-color: #10b981;
+    background: linear-gradient(to right, rgba(16, 185, 129, 0.05), transparent);
+}
+
+.student-item.route-sur .route-badge {
+    background-color: #10b981;
+    color: white;
+}
+
+.student-item.route-centro {
+    border-left-color: #f59e0b;
+    background: linear-gradient(to right, rgba(245, 158, 11, 0.05), transparent);
+}
+
+.student-item.route-centro .route-badge {
+    background-color: #f59e0b;
+    color: white;
+}
+
+.route-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-top: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.student-item:hover {
+    transform: translateX(4px);
+    background: white;
+}
+
 .student-actions {
     display: flex;
     gap: 0.5rem;
@@ -532,6 +633,20 @@ route-card {
     }
 
     .student-actions button {
+        width: 100%;
+    }
+
+    .filter-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-label {
+        width: 100%;
+    }
+
+    .filter-select {
+        min-width: auto;
         width: 100%;
     }
 

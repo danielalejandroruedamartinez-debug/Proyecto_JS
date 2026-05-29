@@ -125,7 +125,7 @@ class StudentManager {
     getAllStudents() {
         return [...this.students];
     }
-
+    
     /**
      * Obtiene estudiantes de una ruta específica
      */
